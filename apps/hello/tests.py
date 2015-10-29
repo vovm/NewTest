@@ -32,7 +32,6 @@ class PersonTest(TestCase):
         response = all_people(request)
         self.assertContains(response, 'Volodymyr')
         self.assertTrue('<h2>42 Coffee Cups Test Assignment</h2>' in response.content)
-        self.assertContains(response, '<a href="/request/">Request</a>')
 
     def test_home_page_use_about_template(self):
         response = self.client.get(reverse('about'))
