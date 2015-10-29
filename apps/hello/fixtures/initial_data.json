@@ -1,0 +1,34 @@
+[
+{
+    "pk": 1,
+    "model": "hello.about",
+    "fields": {
+        "bio": "Born and live in Ukraine. Studied at VNTU",
+        "name": "Volodymyr",
+        "last_name": "Melnychuk",
+        "other_contact": "If you need to get in touch with me, you can use email",
+        "skype": "volodymyr.mm",
+        "date": "2015-10-07",
+        "jabber": "don't have",
+        "email": "vov.m.test@gmail.com"
+    }
+},
+    {
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2015-10-06T11:08:27.167Z",
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$bnKo1DbSD6eU$JwNjvVKjJATFw0tntPcbrQcc85xoZEwBRpi8KTlAf3o=",
+        "email": "vov.m.test@gmail.com",
+        "date_joined": "2015-10-06T11:07:32.833Z"
+        }
+    }
+]
