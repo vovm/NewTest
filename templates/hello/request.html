@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% block title_block %}Last 10 requests{% endblock %}
+{% block content_block %}
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'about' %}">Home</a></li>
+            <li><a href="{% url 'request_list' %}">All Request</a></li>
+        </ul>
+    </div>
+    <div class="clearfix visible-lg-block visible-md-block visible-sm-block visible-xs-block"></div> 
+    <div class="col-lg-12"><h2>Last 10 Requests</h2></div>
+    <div class="col-lg-12">
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td align="center" valign="middle"><p>Date</p></td>
+                <td align="center" valign="middle"><p>Method</p></td>
+                <td align="center" valign="middle"><p>Path</p></td>
+            </tr>
+        <tbody id="all_requests">
+        {% for req in requests %}
+
+            <tr>
+                <td align="center" valign="middle"><p>[{{ req.date|date:"d/M/Y H:i:s" }}]</p><p class="number">{{ req.id }}</p></td>
+                <td align="center" valign="middle"><p>{{ req.method }}</p></td>
+                <td align="center" valign="middle"><p>{{ req.path }}</p></td>
+            </tr>
+    
+        {% endfor %}
+        </tbody>
+        </table>
+    
+    </div>
+    
+    <script src="{% static 'js/ajax.js' %}"></script>
+{% endblock %}

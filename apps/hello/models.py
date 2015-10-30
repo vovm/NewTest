@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class About(models.Model):
@@ -13,3 +14,12 @@ class About(models.Model):
 
     def __unicode__(self):
         return self.last_name
+
+
+class AllRequest(models.Model):
+    date = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    method = models.CharField(max_length=50)
+    path = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return "Request - " + str(self.id)
