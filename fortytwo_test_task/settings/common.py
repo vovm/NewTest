@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'apps.hello',
+    'imagekit',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -128,3 +129,5 @@ TEMPLATE_DIRS = (
 
 # Turn off south during test
 SOUTH_TESTS_MIGRATE = False
+
+LOGIN_REDIRECT_URL = '/'

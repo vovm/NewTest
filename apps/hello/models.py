@@ -11,6 +11,7 @@ class About(models.Model):
     jabber = models.CharField(max_length=100)
     skype = models.CharField(max_length=100)
     other_contact = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='imag', blank=True, null=True)
 
     def __unicode__(self):
         return self.last_name
