@@ -1,4 +1,5 @@
 import json
+import signals
 from time import strftime
 
 from django.shortcuts import render, get_object_or_404

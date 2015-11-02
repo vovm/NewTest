@@ -1,4 +1,5 @@
 import json
+from StringIO import StringIO
 from tempfile import NamedTemporaryFile
 from PIL import Image
 
@@ -6,8 +7,9 @@ from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.template.loader import render_to_string
+from django.core.management import call_command
 
-from .models import About, AllRequest
+from .models import About, AllRequest, SignalData
 from .views import all_people, request_list
 from hello.forms import EditPersonForm
 
@@ -165,3 +167,45 @@ class EditPersonTest(TestCase):
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(About.objects.get(pk=1).name, 'Somebody')
         self.assertEqual(About.objects.get(pk=1).email, 'q@q.ua')
+
+
+class TagTest(TestCase):
+    """ Unit tests for own tag"""
+    fixtures = ['initial_data.json']
+    
+    def test_admin_tag_with_user1(self):
+        self.client.login(username='admin', password='1')
+        response = self.client.get(reverse('edit', kwargs={'pk': 1}))
+        self.assertContains(response, '<a href="/admin/hello/about/1/">(admin)</a>')
+
+
+class OwnCommandTest(TestCase):
+    """ Unit tests for own management command - count_objects"""
+    fixtures = ['initial_data.json']
+
+    def test_command_style(self):
+        out = StringIO()
+        call_command('count_objects', stderr=out)
+        self.assertIn("Error: Model About has 1 objects in database", out.getvalue())
+        self.assertIn("Error: Model User has 1 objects in database", out.getvalue())
+
+
+class SignalDataTest(TestCase):
+    """ Unit tests for SignalData"""
+
+    def test_post_create(self):
+        SignalData.objects.all().delete()
+        c = Client()
+        response = c.get('/')
+        self.assertEqual(SignalData.objects.count(), 1)
+        log_info = SignalData.objects.get(pk=1).message
+        self.assertEqual(log_info, "Create row with id 1 in AllRequest")
+
+    def test_post_delete(self):
+        SignalData.objects.all().delete()
+        c = Client()
+        response = c.get('/')
+        AllRequest.objects.all().delete()
+        self.assertEqual(SignalData.objects.count(), 2)
+        log_info = SignalData.objects.get(pk=2).message
+        self.assertEqual(log_info, "Delete row with id 1 in AllRequest")

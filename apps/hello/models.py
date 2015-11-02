@@ -24,3 +24,8 @@ class AllRequest(models.Model):
 
     def __unicode__(self):
         return "Request - " + str(self.id)
+
+
+class SignalData(models.Model):
+    date = models.DateTimeField(default=timezone.now)
+    message = models.TextField(null=True, blank=True)
