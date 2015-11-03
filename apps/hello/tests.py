@@ -11,7 +11,7 @@ from django.core.management import call_command
 
 from .models import About, AllRequest, SignalData
 from .views import all_people, request_list
-from hello.forms import EditPersonForm
+from hello.forms import EditPersonForm, EditRequestForm
 
 
 class PersonTest(TestCase):
@@ -64,6 +64,7 @@ class AllRequestTest(TestCase):
         c = Client()
         response = c.get('/')
         self.assertEqual(AllRequest.objects.count(), 1)
+        self.assertEqual(AllRequest.objects.get(pk=1).priority, 0)
         self.assertEqual(AllRequest.objects.get(pk=1).__str__(), "Request - 1")
 
     def test_all_request_page_contains_info(self):
@@ -74,6 +75,75 @@ class AllRequestTest(TestCase):
     def test_all_request_page_use_request_template(self):
         response = self.client.get(reverse('request_list'))
         self.assertTemplateUsed(response, 'hello/request.html')
+
+    def test_low_request_page_available(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'low'}))
+        self.assertEquals(response.status_code, 200)
+
+    def test_high_request_page_available(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'high'}))
+        self.assertEquals(response.status_code, 200)
+
+    def test_edit_request_page_available(self):
+        c = Client()
+        response = c.get(reverse('edit_request', kwargs={'pk': 1}))
+        self.assertEquals(response.status_code, 200)
+
+    def test_high_request_page_use_request_template(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'high'}))
+        self.assertTemplateUsed(response, 'hello/request_priority.html')
+
+    def test_low_request_page_use_request_template(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'low'}))
+        self.assertTemplateUsed(response, 'hello/request_priority.html')
+
+    def test_edt_request_page_use_edit_template(self):
+        response = self.client.get(reverse('edit_request', kwargs={'pk': 1}))
+        self.assertTemplateUsed(response, 'hello/edit_request.html')
+
+    def test_edit_request_page_info_about_request(self):
+        response = self.client.get(reverse('edit_request', kwargs={'pk': 1}))
+        req = AllRequest.objects.get(pk=1)
+        self.assertContains(response, req.priority)
+        self.assertContains(response, req.method)
+        self.assertContains(response, req.path)
+
+    def test_edit_request_page_uses_edit_form(self):
+        response = self.client.get(reverse('edit_request', kwargs={'pk': 1}))
+        self.assertIsInstance(response.context['form'], EditRequestForm)
+
+    def test_high_request_page_contains_info(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'high'}))
+        self.assertTrue('Request with high priority' in response.content)
+        self.assertContains(response, '<h2>Requests - high priority</h2>')
+
+    def test_low_request_page_contains_info(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'low'}))
+        self.assertTrue('Request with low priority' in response.content)
+        self.assertContains(response, '<h2>Requests - low priority</h2>')
+
+    def test_request_page_with_bad_data_contains_info(self):
+        response = self.client.get(reverse('request_priority', kwargs={'rank': 'bad'}))
+        self.assertTrue('Request with low priority' in response.content)
+        self.assertContains(response, '<h2>Requests - low priority</h2>')
+
+    def test_edit_page_has_default_priority(self):
+        c = Client()
+        response = c.get(reverse('request_list'))
+        self.assertEqual(AllRequest.objects.get(pk=1).priority, 0)
+
+    def test_edit_request_form_success_submit(self):
+        response = self.client.get(reverse('request_list'))
+        data = {'priority': 1}
+        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(AllRequest.objects.get(pk=1).priority, 1)
+
+    def test_edit_request_form_error(self):
+        response = self.client.get(reverse('request_list'))
+        data = {}
+        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
+        self.assertEqual(response.status_code, 200)
 
     def test_all_request_ajax_list_json(self):
         response = self.client.get(reverse('request_list'))
@@ -200,6 +270,14 @@ class SignalDataTest(TestCase):
         self.assertEqual(SignalData.objects.count(), 1)
         log_info = SignalData.objects.get(pk=1).message
         self.assertEqual(log_info, "Create row with id 1 in AllRequest")
+
+    def test_post_update(self):
+        SignalData.objects.all().delete()
+        response = self.client.get(reverse('request_list'))
+        data = {'priority': 1}
+        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
+        log_info = SignalData.objects.get(pk=3).message
+        self.assertEqual(log_info, "Update row with id 1 in AllRequest")
 
     def test_post_delete(self):
         SignalData.objects.all().delete()

@@ -3,10 +3,7 @@ from .models import *
 
 
 def add_signal_save(instance, **kwargs):
-    try: 
-        number = instance.id 
-    except: 
-        number = None
+    number = getattr(instance, 'id', 'None')
     name_class = kwargs['sender']
     name_model = name_class.__name__
 
@@ -19,10 +16,7 @@ def add_signal_save(instance, **kwargs):
     
 
 def add_signal_delete(instance, **kwargs):
-    try: 
-        number = instance.id 
-    except: 
-        number = None
+    number = getattr(instance, 'id', 'None')
     name_class = kwargs['sender']
     name_model = name_class.__name__
 

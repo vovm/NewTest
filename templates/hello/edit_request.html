@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% block title_block %}Edit request{% endblock %}
+{% block content_block %}
+
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'about' %}">Home</a></li>
+            <li><a href="{% url 'request_list' %}">All Request</a></li>
+            <li><a href="../../request/low/">Requests with low priority</a></li>
+            <li><a href="../../request/high/">Requests with high priority</a></li>
+        </ul>
+    </div>
+
+    <div class="clearfix visible-lg-block visible-md-block visible-sm-block visible-xs-block"></div> 
+    <div class="col-lg-12"><h2>Edit request</h2></div>
+
+    <div class="col-lg-12">
+        <p>[ {{ req.date|date:"d/M/Y H:i:s" }} ] " {{ req.method }} {{ req.path }} "</p>
+        <p>Choose the priority: 0 or 1 (0 - Low priority, 1 - High priority)</p>
+        <form class="form" role='form' action="{% url 'edit_request' pk %}" method="post">
+            {% csrf_token %}
+            {{ form.priority }}
+            <button class="btn btn-md btn-primary">Save</button>
+        </form>
+    </div>
+
+{% endblock %}

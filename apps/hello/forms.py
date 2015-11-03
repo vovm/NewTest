@@ -3,7 +3,7 @@ from imagekit.forms import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 from .widgets import MyOwnWidget
-from .models import About
+from .models import About, AllRequest
 
 
 class EditPersonForm(forms.ModelForm):
@@ -15,3 +15,9 @@ class EditPersonForm(forms.ModelForm):
 
     class Meta:
         model = About
+
+
+class EditRequestForm(forms.ModelForm):
+    class Meta:
+        model = AllRequest
+        exclude = ('req', 'date', 'method', 'path')
