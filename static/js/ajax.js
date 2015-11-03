@@ -10,7 +10,7 @@ $(document).ready(function(){
             var number1 = +$('p.number:first').text();
 
             $.ajax({
-                type : "POST",
+                type : "GET",
                 url:"ajax_request_list",
                 dataType:"json",
                 success:function(data){
@@ -23,8 +23,9 @@ $(document).ready(function(){
                         html += '<td align="center" valign="middle"><p>[' + value.req_date + ']</p><p class="number">' + value.req_id + '</p></td>';
                         html += '<td align="center" valign="middle"><p>' + value.req_method + '</p></td>';
                         html += '<td align="center" valign="middle"><p>' + value.req_path + '</p></td>';
+                        html += '<td align="center" valign="middle"><p><a href="../edit_request/' + value.req_id + '">Edit</a></p></td>';
                         html += '</tr>';
-                        all_requests.prepend(html);
+                        all_requests.append(html);
                     });
 
                     var watched = $.cookie('watched');
