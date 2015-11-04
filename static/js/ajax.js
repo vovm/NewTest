@@ -23,6 +23,7 @@ $(document).ready(function(){
                         html += '<td align="center" valign="middle"><p>[' + value.req_date + ']</p><p class="number">' + value.req_id + '</p></td>';
                         html += '<td align="center" valign="middle"><p>' + value.req_method + '</p></td>';
                         html += '<td align="center" valign="middle"><p>' + value.req_path + '</p></td>';
+                        html += '<td align="center" valign="middle"><p>' + value.req_priority + '</p></td>';
                         html += '<td align="center" valign="middle"><p><a href="../edit_request/' + value.req_id + '">Edit</a></p></td>';
                         html += '</tr>';
                         all_requests.append(html);

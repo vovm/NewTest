@@ -9,4 +9,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for app in models.get_apps():
             for model in models.get_models(app):
+                self.stdout.write('Model %s has %d objects in database' % (model.__name__, model.objects.count()))
                 self.stderr.write('Error: Model %s has %d objects in database' % (model.__name__, model.objects.count()))

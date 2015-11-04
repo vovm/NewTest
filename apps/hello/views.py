@@ -19,7 +19,7 @@ def all_people(request):
 
 
 def request_list(request):
-    requests = AllRequest.objects.order_by('-id')[:10]
+    requests = AllRequest.objects.order_by('-date')[:10]
     return render(request, 'hello/request.html', {'requests': requests})
 
 
@@ -29,7 +29,8 @@ def ajax_request_list(request):
     data = [{'req_id': req.id, 
              'req_date': req.date.strftime("%d/%b/%Y %H:%M:%S"), 
              'req_method': req.method,
-             'req_path': req.path} for req in requests]
+             'req_path': req.path, 
+             'req_priority': req.priority} for req in requests]
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
