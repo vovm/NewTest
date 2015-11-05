@@ -48,22 +48,15 @@ def edit_person(request, pk):
     return render(request, 'hello/edit.html', {'form': form,  'pk': pk, 'person': person})
 
 
-def request_list_priority(request, rank):
-    if rank == "low":
-        priority = 0
-    elif rank == "high":
-        priority = 1
-    else:
-        priority = 0
-        rank = 'low'
-    requests_list = AllRequest.objects.order_by('-id').filter(priority=priority)
+def request_list_priority(request):
+    requests_list = AllRequest.objects.order_by('-priority')
     paginator = Paginator(requests_list, 10)
     page = request.GET.get('page')
     try:
         requests = paginator.page(page)
     except:
         requests = paginator.page(1)
-    return render(request, 'hello/request_priority.html', {'requests': requests, 'rank': rank})
+    return render(request, 'hello/request_priority.html', {'requests': requests})
 
 
 def edit_request(request, pk):
@@ -72,7 +65,7 @@ def edit_request(request, pk):
         form = EditRequestForm(request.POST, instance=req)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('request_list'))
+            return HttpResponseRedirect(reverse('request_priority'))
     else:
         form = EditRequestForm(instance=req)
     return render(request, 'hello/edit_request.html', {'form': form,  'pk': pk, 'req': req})

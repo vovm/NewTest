@@ -6,9 +6,8 @@
     <div>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'about' %}">Home</a></li>
-            <li><a href="{% url 'request_list' %}">All Request</a></li>
-            <li><a href="{% url 'request_priority' 'low' %}">Requests with low priority</a></li>
-            <li><a href="{% url 'request_priority' 'high' %}">Requests with high priority</a></li>
+            <li><a href="{% url 'request_list' %}">Last 10 requests</a></li>
+            <li><a href="{% url 'request_priority' %}">All Requests with priority</a></li>
         </ul>
     </div>
     <div class="clearfix visible-lg-block visible-md-block visible-sm-block visible-xs-block"></div> 

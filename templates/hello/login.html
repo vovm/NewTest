@@ -6,12 +6,19 @@
     <form class="form-signin" role="form" action="{% url 'login' %}" method="post" >
         {% csrf_token %}
         <h1>Login</h1>
-        <p>Username:</p>
-        {{ form.username }}
-        <p>&nbsp;</p>
-        <p>Password:</p>
-        {{ form.password }}
-        <p>&nbsp;</p>
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="alert alert-danger">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">{{ error|escape }}</div>
+        {% endfor %}
         <button class="btn btn-md btn-primary">Login</button>
     </form>
 

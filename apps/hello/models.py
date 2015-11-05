@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class About(models.Model):
@@ -18,7 +19,8 @@ class About(models.Model):
 
 
 class AllRequest(models.Model):
-    priority = models.IntegerField(max_length=1, default=0)
+    priority = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(9)],
+                                   default=0)
     date = models.DateTimeField(default=timezone.now, null=True, blank=True)
     method = models.CharField(max_length=50)
     path = models.CharField(max_length=200)
