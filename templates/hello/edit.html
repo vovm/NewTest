@@ -49,6 +49,8 @@
                     <div class="col-xs-12">
                         {% if person.image %}
                             <p><img class="image1" src='{{ MEDIA_URL }}{{ form.image.value }}'></p>
+                        {% else %}
+                            <p><img class="image1" src='{% static 'image/no.gif' %}'></p>
                         {% endif %}
                     </div>
 
@@ -92,13 +94,5 @@
 
     </div>
 
-    <link href="{% static 'admin/css/forms.css' %}" type="text/css" media="all" rel="stylesheet" />
-
-    <link href="{% static 'admin/css/widgets.css' %}" type="text/css" media="all" rel="stylesheet" />
-
-    <script type="text/javascript" src="/admin/jsi18n/"></script>
-    <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-    <script type="text/javascript" src="{% static 'admin/js/calendar.js' %}"></script>
-    <script type="text/javascript" src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
     <script type='text/javascript' src="{% static 'js/ajax-form.js' %}"></script>
 {% endblock %}

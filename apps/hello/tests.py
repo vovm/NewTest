@@ -3,7 +3,7 @@ from StringIO import StringIO
 from tempfile import NamedTemporaryFile
 from PIL import Image
 
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -226,10 +226,37 @@ class EditPersonTest(TestCase):
                                      'email': 'q@q.ua',
                                      'jabber': '-',
                                      'other_contact': '-',
-                                     'skype': '-',},
+                                     'skype': '-'},
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(About.objects.get(pk=1).name, 'Somebody')
         self.assertEqual(About.objects.get(pk=1).email, 'q@q.ua')
+
+    def test_edit_page_form_with_bad_data(self):
+        self.client.login(username='admin', password='1')
+        image = Image.new('RGB', (100, 100))
+        tmp_file = NamedTemporaryFile(suffix='.jpg')
+        image.save(tmp_file)
+        response = self.client.post(reverse('edit', kwargs={'pk': 1}),
+                                    {'name': 'Somebody',
+                                     'last_name': 'Unknown',
+                                     'date': '2015-99-99',
+                                     'image': tmp_file,
+                                     'bio': '-',
+                                     'email': 'q@q.ua',
+                                     'jabber': '-',
+                                     'other_contact': '-',
+                                     'skype': '-'},
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTrue('Enter a valid date' in response.content)
+
+    def test_edit_page_form_with_no_data(self):
+        self.client.login(username='admin', password='1')
+        response = self.client.post(reverse('edit', kwargs={'pk': 1}),
+                                    {'name': 'Somebody',
+                                     'last_name': 'Unknown',
+                                     'date': '2015-01-01'},
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertTrue('This field is required' in response.content)
 
 
 class TagTest(TestCase):

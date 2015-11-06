@@ -4,10 +4,10 @@ from time import strftime
 
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 
 from .models import About, AllRequest
 from .forms import EditPersonForm, EditRequestForm
@@ -43,6 +43,14 @@ def edit_person(request, pk):
             form.save()
             if request.is_ajax():
                 return HttpResponse('OK')
+        else:
+            if request.is_ajax():
+                errors_dict = {}
+                if form.errors:
+                    for error in form.errors:
+                        e = form.errors[error]
+                        errors_dict[error] = unicode(e)
+                return HttpResponseBadRequest(json.dumps(errors_dict))
     else:
         form = EditPersonForm(instance=person)
     return render(request, 'hello/edit.html', {'form': form,  'pk': pk, 'person': person})

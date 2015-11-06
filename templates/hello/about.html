@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load admin-link %}
+{% load staticfiles %}
 
 {% block title_block %}About person{% endblock %}
 {% block content_block %}
@@ -35,7 +36,9 @@
             <p>Date of birth: {{ person.date }}</p>
             <p>Photo:</p>
             {% if person.image %}
-                    <p><img class="img-responsive img-thumbnail image1" src='{{ person.image.url }}'></p>
+                <p><img class="img-responsive img-thumbnail image1" src='{{ person.image.url }}'></p>
+            {% else %}
+                <p><img class="image1" src='{% static 'image/no.gif' %}'></p>
             {% endif %}
                            
         </div>

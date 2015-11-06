@@ -107,3 +107,13 @@ body {
 .padding1 {
   height: 35px;
 }
+
+.error1 {
+  color: red; 
+  font-weight: bolder;
+}
+
+.errorlist {
+  color: red; 
+  font-weight: bolder;
+}

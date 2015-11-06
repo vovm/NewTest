@@ -9,6 +9,7 @@ $(document).ready(function() {
         $('textarea').removeAttr('disabled');
         $('input').removeAttr('disabled');
         $('#load').hide();
+        $('.errorlist').remove();
     }
 
     var options = {
@@ -20,6 +21,18 @@ $(document).ready(function() {
             $("#result").show();
             setTimeout(function() {
                 $("#result").hide();
+            }, 4000);
+        },
+        error:  function(resp) {
+            unblock_form();
+            $("#error").show();
+            var errors = JSON.parse(resp.responseText);
+            for (error in errors) {
+                var id = '#id_' + error;
+                $(id).parent('div').append(errors[error]);
+            }
+            setTimeout(function() {
+                $("#error").hide();
             }, 4000);
         }
     };
