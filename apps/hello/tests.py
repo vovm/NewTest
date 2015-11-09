@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 import json
 from StringIO import StringIO
 from tempfile import NamedTemporaryFile
@@ -18,7 +19,8 @@ class PersonTest(TestCase):
     """ Unit tests for About model and views """
     fixtures = ['initial_data.json']
     
-    def create_people(self, name="A", last_name="S", email="q@q.ua", jabber="-", skype="-"):
+    def create_people(self, name="A", last_name="S", email="q@q.ua",
+                      jabber="-", skype="-"):
         return About.objects.create(name=name,
                                     last_name=last_name,
                                     email=email,
@@ -30,15 +32,31 @@ class PersonTest(TestCase):
         self.assertTrue(isinstance(a, About))
         self.assertEqual(a.__str__(), a.last_name)
 
+    def test_home_page_doesnt_contains_info(self):
+        About.objects.all().delete()
+        response = self.client.get(reverse('about'))
+        self.assertNotContains(response, 'Name')
+
+    def test_db_contains_two_records(self):
+        About.objects.all().delete()
+        self.create_people('GoodName', 'StrangeLastName')
+        self.create_people()
+        response = self.client.get(reverse('about'))
+        self.assertContains(response, 'GoodName')
+
+    def test_home_page_contains_cyrillic(self):
+        About.objects.all().delete()
+        self.create_people(u"Петя")
+        response = self.client.get(reverse('about'))
+        self.assertContains(response, u"Петя")
+
     def test_home_page_available(self):
         response = self.client.get(reverse('about'))
         self.assertEquals(response.status_code, 200)
 
     def test_home_page_contains_info(self):
-        request = HttpRequest()
-        response = all_people(request)
-        self.assertContains(response, 'Volodymyr')
-        self.assertTrue('<h2>42 Coffee Cups Test Assignment</h2>' in response.content)
+        response = self.client.get(reverse('about'))
+        self.assertTrue(response.context['people'], 'Melnychuk')
 
     def test_home_page_use_about_template(self):
         response = self.client.get(reverse('about'))
@@ -104,6 +122,24 @@ class AllRequestTest(TestCase):
         response = self.client.get(reverse('request_priority'))
         self.assertTrue('Requests with priority' in response.content)
 
+    def test_request_priority_page_order(self):
+        AllRequest.objects.all().delete()
+        self.client.get(reverse('about'))
+        self.client.get(reverse('request_list'))
+        req = AllRequest.objects.get(pk=1)
+        req.priority = 9
+        req.save()
+        response = self.client.get(reverse('request_priority'))
+        self.assertEqual(response.context['requests'][0].priority, 9)
+        self.assertEqual(response.context['requests'][1].priority, 0)
+
+    def test_request_date_page_order(self):
+        AllRequest.objects.all().delete()
+        self.client.get(reverse('about'))
+        response = self.client.get(reverse('request_list'))
+        self.assertEqual(response.context['requests'][0].path, '/request/')
+        self.assertEqual(response.context['requests'][1].path, '/')
+
     def test_edit_page_has_default_priority(self):
         AllRequest.objects.all().delete()
         response = self.client.get(reverse('request_list'))
@@ -112,22 +148,25 @@ class AllRequestTest(TestCase):
     def test_edit_request_form_success_submit(self):
         response = self.client.get(reverse('request_list'))
         data = {'priority': 1}
-        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
+        response = self.client.post(reverse('edit_request',
+                                            kwargs={'pk': 1}), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(AllRequest.objects.get(pk=1).priority, 1)
 
     def test_edit_request_form_with_no_data(self):
         response = self.client.get(reverse('request_list'))
         data = {}
-        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
+        response = self.client.post(reverse('edit_request',
+                                            kwargs={'pk': 1}), data)
         self.assertTrue('This field is required' in response.content)
         self.assertEqual(response.status_code, 200)
 
     def test_edit_request_form_with_bad_data(self):
         response = self.client.get(reverse('about'))
         data = {'priority': 111}
-        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
-        self.assertTrue('Ensure this value is less than or equal to 9' in response.content)
+        response = self.client.post(reverse('edit_request',
+                                            kwargs={'pk': 1}), data)
+        self.assertTrue('value is less than or equal to 9' in response.content)
         self.assertEqual(response.status_code, 200)    
 
     def test_all_request_ajax_list_json(self):
@@ -159,7 +198,7 @@ class LoginTest(TestCase):
     def test_login_page_form_with_bad_data(self):
         data = {'username': 'admin', 'password': 111}
         response = self.client.post(reverse('login'), data)
-        self.assertTrue('Please enter a correct username and password' in response.content)
+        self.assertTrue('Please enter a correct username' in response.content)
 
 
 class EditPersonTest(TestCase):
@@ -266,7 +305,8 @@ class TagTest(TestCase):
     def test_admin_tag_with_user1(self):
         self.client.login(username='admin', password='1')
         response = self.client.get(reverse('edit', kwargs={'pk': 1}))
-        self.assertContains(response, '<a href="/admin/hello/about/1/">(admin)</a>')
+        self.assertContains(response,
+                            '<a href="/admin/hello/about/1/">(admin)</a>')
 
 
 class OwnCommandTest(TestCase):
@@ -276,8 +316,8 @@ class OwnCommandTest(TestCase):
     def test_command_style(self):
         out = StringIO()
         call_command('count_objects', stderr=out)
-        self.assertIn("Error: Model About has 1 objects in database", out.getvalue())
-        self.assertIn("Error: Model User has 1 objects in database", out.getvalue())
+        self.assertIn("Error: Model About has 1 objects", out.getvalue())
+        self.assertIn("Error: Model User has 1 objects", out.getvalue())
 
 
 class SignalDataTest(TestCase):
@@ -294,7 +334,8 @@ class SignalDataTest(TestCase):
         SignalData.objects.all().delete()
         response = self.client.get(reverse('request_list'))
         data = {'priority': 1}
-        response = self.client.post(reverse('edit_request', kwargs={'pk': 1}), data)
+        response = self.client.post(reverse('edit_request',
+                                            kwargs={'pk': 1}), data)
         log_info = SignalData.objects.get(pk=3).message
         self.assertEqual(log_info, "Update row with id 1 in AllRequest")
 

@@ -53,7 +53,9 @@ def edit_person(request, pk):
                 return HttpResponseBadRequest(json.dumps(errors_dict))
     else:
         form = EditPersonForm(instance=person)
-    return render(request, 'hello/edit.html', {'form': form,  'pk': pk, 'person': person})
+    return render(request, 'hello/edit.html', {'form': form,
+                                               'pk': pk,
+                                               'person': person})
 
 
 def request_list_priority(request):
@@ -76,4 +78,6 @@ def edit_request(request, pk):
             return HttpResponseRedirect(reverse('request_priority'))
     else:
         form = EditRequestForm(instance=req)
-    return render(request, 'hello/edit_request.html', {'form': form,  'pk': pk, 'req': req})
+    return render(request, 'hello/edit_request.html', {'form': form,
+                                                       'pk': pk,
+                                                       'req': req})

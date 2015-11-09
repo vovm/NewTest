@@ -19,7 +19,8 @@ class About(models.Model):
 
 
 class AllRequest(models.Model):
-    priority = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(9)],
+    priority = models.IntegerField(validators=[MinValueValidator(0),
+                                               MaxValueValidator(9)],
                                    default=0)
     date = models.DateTimeField(default=timezone.now, null=True, blank=True)
     method = models.CharField(max_length=50)
