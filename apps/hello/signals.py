@@ -1,4 +1,3 @@
-from django.db.models import signals
 from .models import SignalData
 
 
@@ -26,7 +25,3 @@ def add_signal_delete(instance, **kwargs):
         entry = SignalData(message="Delete row with id " + str(number) +
                                    " in " + name_model)
         entry.save()
-
-
-signals.post_save.connect(add_signal_save, dispatch_uid='SomeText')
-signals.post_delete.connect(add_signal_delete, dispatch_uid='SomeText2')
