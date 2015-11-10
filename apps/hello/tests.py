@@ -77,12 +77,6 @@ class AllRequestTest(TestCase):
         response = self.client.get(reverse('request_list'))
         self.assertEquals(response.status_code, 200)
 
-    def test_request_page_returns_correct_html(self):
-        """ Test last request page returns correct html """
-        response = self.client.get(reverse('request_list'))
-        expected_content = render_to_string('hello/request.html')
-        self.assertEqual(response.content.decode('utf8'), expected_content)
-
     def test_request_works(self):
         """ Test requests """
         AllRequest.objects.all().delete()
