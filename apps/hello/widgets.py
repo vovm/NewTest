@@ -1,7 +1,7 @@
 from django import forms
 
 
-class MyOwnWidget(forms.TextInput):
+class MyDateWidget(forms.TextInput):
     class Media:
         js = (
             'js/calendar.js',
