@@ -6,12 +6,9 @@ from PIL import Image
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.http import HttpRequest
-from django.template.loader import render_to_string
 from django.core.management import call_command
 
 from .models import About, AllRequest, SignalData
-from .views import request_list
 from hello.forms import EditPersonForm, EditRequestForm
 
 
