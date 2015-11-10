@@ -79,8 +79,7 @@ class AllRequestTest(TestCase):
 
     def test_request_page_returns_correct_html(self):
         """ Test last request page returns correct html """
-        request = HttpRequest()
-        response = request_list(request)
+        response = self.client.get(reverse('request_list'))
         expected_content = render_to_string('hello/request.html')
         self.assertEqual(response.content.decode('utf8'), expected_content)
 
@@ -94,8 +93,7 @@ class AllRequestTest(TestCase):
 
     def test_last_request_page_contains_info(self):
         """ Test last request page available """
-        request = HttpRequest()
-        response = request_list(request)
+        response = self.client.get(reverse('request_list'))
         self.assertTrue('<h2>Last 10 Requests</h2>' in response.content)
 
     def test_last_request_page_use_request_template(self):
