@@ -7,11 +7,11 @@ from .models import About, AllRequest
 
 
 class EditPersonForm(forms.ModelForm):
-    date = forms.DateField(widget=MyOwnWidget(attrs={'class':'datepicker'}))
+    date = forms.DateField(widget=MyOwnWidget(attrs={'class': 'datepicker'}))
     image = ProcessedImageField(spec_id='hello:about:image',
-                                           processors=[ResizeToFill(200, 200)],
-                                           format='JPEG',
-                                           options={'quality': 90})
+                                processors=[ResizeToFill(200, 200)],
+                                format='JPEG',
+                                options={'quality': 90})
 
     class Meta:
         model = About
