@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 import json
 from StringIO import StringIO
 from tempfile import NamedTemporaryFile

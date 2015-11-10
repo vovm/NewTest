@@ -8,11 +8,11 @@ def add_signal_save(instance, **kwargs):
     name_model = name_class.__name__
 
     if kwargs['created'] and name_model != 'SignalData':
-        entry = SignalData(message="Create row with id " + str(number) + \
+        entry = SignalData(message="Create row with id " + str(number) +
                                    " in " + name_model)
         entry.save()
     elif not kwargs['created'] and name_model != 'SignalData':
-        entry = SignalData(message="Update row with id " + str(number) + \
+        entry = SignalData(message="Update row with id " + str(number) +
                                    " in " + name_model)
         entry.save()
 
@@ -23,7 +23,7 @@ def add_signal_delete(instance, **kwargs):
     name_model = name_class.__name__
 
     if name_model != 'SignalData':
-        entry = SignalData(message="Delete row with id " + str(number) + \
+        entry = SignalData(message="Delete row with id " + str(number) +
                                    " in " + name_model)
         entry.save()
 
